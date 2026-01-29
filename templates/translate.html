@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English to Kannada Translator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .translator-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+
+        .translator-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .translator-header h1 {
+            color: #2b6cb0;
+            margin-bottom: 0.5rem;
+        }
+
+        .translator-header a {
+            color: #2b6cb0;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .translator-header a:hover {
+            text-decoration: underline;
+        }
+
+        .translator-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1a202c;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 150px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #2b6cb0;
+            box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn-translate {
+            background: #2b6cb0;
+            color: white;
+        }
+
+        .btn-translate:hover {
+            background: #1f4f8a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(43, 108, 176, 0.3);
+        }
+
+        .btn-clear {
+            background: #e2e8f0;
+            color: #1a202c;
+        }
+
+        .btn-clear:hover {
+            background: #cbd5e0;
+        }
+
+        .btn-home {
+            background: #718096;
+            color: white;
+        }
+
+        .btn-home:hover {
+            background: #4a5568;
+        }
+
+        .error-message {
+            background: #fed7d7;
+            color: #c53030;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #c53030;
+        }
+
+        .result-section {
+            margin-top: 2rem;
+            padding: 2rem;
+            background: #f7fafc;
+            border-radius: 8px;
+            border-left: 4px solid #2b6cb0;
+        }
+
+        .result-section h2 {
+            color: #2b6cb0;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .result-box {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            line-height: 1.8;
+            font-size: 1rem;
+            color: #1a202c;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        .copy-btn {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background: #48bb78;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+        }
+
+        .copy-btn.copied {
+            background: #38a169;
+        }
+
+        @media (max-width: 768px) {
+            .translator-container {
+                padding: 1rem;
+            }
+
+            .translator-form {
+                padding: 1.5rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">🌐 Kannada Translator</a>
+            <ul class="nav-menu">
+                <li><a href="/">← Back to Home</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="translator-container">
+        <div class="translator-header">
+            <h1>English → Kannada Translator</h1>
+            <p>Enter English text below to translate it to Kannada</p>
+        </div>
+
+        {% if error %}
+        <div class="error-message">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <div class="translator-form">
+            <form method="POST">
+                <div class="form-group">
+                    <label for="text">Enter English Text</label>
+                    <textarea id="text" name="text" placeholder="Type or paste English text here...">{{ text }}</textarea>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn btn-translate">🔄 Translate</button>
+                    <button type="reset" class="btn btn-clear">Clear</button>
+                    <a href="/" class="btn btn-home" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">← Home</a>
+                </div>
+            </form>
+        </div>
+
+        {% if translation is not none %}
+        <div class="result-section">
+            <h2>Kannada Translation</h2>
+            <div class="result-box" id="result-text">{{ translation }}</div>
+            <button class="copy-btn" onclick="copyToClipboard()">📋 Copy Result</button>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function copyToClipboard() {
+            const resultText = document.getElementById('result-text').innerText;
+            navigator.clipboard.writeText(resultText).then(() => {
+                const btn = event.target;
+                btn.textContent = '✓ Copied!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = '📋 Copy Result';
+                    btn.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                alert('Failed to copy: ' + err);
+            });
+        }
+    </script>
+</body>
+</html>
